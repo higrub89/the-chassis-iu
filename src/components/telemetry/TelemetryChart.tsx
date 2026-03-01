@@ -27,10 +27,10 @@ export function TelemetryChart() {
                     />
                     <YAxis
                         yAxisId="left"
-                        domain={[(dataMin: number) => Math.min(dataMin * 1.1, -0.01), (dataMax: number) => Math.max(dataMax * 1.1, 0.01)]}
+                        domain={['auto', 'auto']}
                         stroke="#10b981"
                         fontSize={10}
-                        tickFormatter={(val) => val.toFixed(4)}
+                        tickFormatter={(val) => val.toFixed(6)}
                     />
                     <YAxis
                         yAxisId="right"

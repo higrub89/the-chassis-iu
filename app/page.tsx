@@ -60,7 +60,7 @@ export default function Dashboard() {
         <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm flex flex-col justify-center">
           <p className="text-xs text-gray-500 mb-2 tracking-widest">NET PNL (SOL)</p>
           <p className={`text-4xl font-light ${data?.net_pnl && data.net_pnl < 0 ? 'text-red-500' : 'text-emerald-500'}`}>
-            {data?.net_pnl ? data.net_pnl.toFixed(4) : '0.0000'}
+            {data?.net_pnl ? data.net_pnl.toFixed(9) : '0.000000000'}
           </p>
         </div>
 
