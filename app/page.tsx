@@ -40,11 +40,21 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm flex flex-col justify-center">
-          <p className="text-xs text-gray-500 mb-2 tracking-widest">WALLET BALANCE</p>
-          <p className="text-4xl font-light text-white flex items-end gap-2">
-            {data?.wallet_balance !== undefined ? data.wallet_balance.toFixed(4) : '0.0000'}
-            <span className="text-base text-gray-600 mb-1">SOL</span>
+          <p className="text-xs text-gray-500 mb-2 tracking-widest flex items-center justify-between">
+            WALLET BALANCE
+            {data?.sol_price ? <span className="text-[10px] text-emerald-500 bg-emerald-950/30 border border-emerald-900/50 px-2 py-0.5 rounded-sm">${data.sol_price.toFixed(2)}/SOL</span> : null}
           </p>
+          <div className="flex items-end justify-between">
+            <p className="text-4xl font-light text-white flex items-end gap-2">
+              {data?.wallet_balance !== undefined ? data.wallet_balance.toFixed(4) : '0.0000'}
+              <span className="text-base text-gray-600 mb-1">SOL</span>
+            </p>
+          </div>
+          {data?.wallet_balance !== undefined && data?.sol_price !== undefined && (
+            <p className="text-[11px] text-gray-500 mt-2 tracking-widest">
+              ≈ ${(data.wallet_balance * data.sol_price).toFixed(2)} USD
+            </p>
+          )}
         </div>
 
         <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm flex flex-col justify-center">
