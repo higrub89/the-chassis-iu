@@ -47,7 +47,13 @@ export default function Dashboard() {
         </div>
 
         <div className="md:col-span-2 bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm h-[200px]">
-          <h2 className="text-[10px] text-gray-600 mb-4 tracking-widest uppercase">REAL-TIME NET PNL</h2>
+          <h2 className="text-[10px] text-gray-600 mb-4 tracking-widest uppercase flex justify-between">
+            <span>REAL-TIME NET PNL & LATENCY</span>
+            <div className="flex gap-4">
+              <span className="text-emerald-500">■ PNL</span>
+              <span className="text-blue-500">■ PING</span>
+            </div>
+          </h2>
           <div className="h-[140px] w-full">
             <TelemetryChart />
           </div>

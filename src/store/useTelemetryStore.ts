@@ -20,7 +20,7 @@ export interface TelemetryTick {
 interface TelemetryState {
   connected: boolean;
   data: TelemetryTick | null;
-  history: { time: string; pnl: number }[];
+  history: { time: string; pnl: number; ping: number }[];
   sendCommand: (cmd: string) => void;
   registerSender: (fn: (cmd: string) => void) => void;
   setConnectionStatus: (status: boolean) => void;
@@ -36,7 +36,7 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
   setConnectionStatus: (status) => set({ connected: status }),
   updateTelemetry: (tick) => set((state) => {
     const timeStr = new Date(tick.t * 1000).toLocaleTimeString([], { hour12: false });
-    const newHistory = [...state.history, { time: timeStr, pnl: tick.net_pnl }].slice(-60);
+    const newHistory = [...state.history, { time: timeStr, pnl: tick.net_pnl, ping: tick.rpc_ping }].slice(-60);
     return { data: tick, history: newHistory };
   }),
 }));
