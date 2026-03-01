@@ -13,6 +13,7 @@ export interface TelemetryTick {
   t: number;
   net_pnl: number;
   rpc_ping: number;
+  wallet_balance?: number;
   status: string;
   positions: Position[];
 }

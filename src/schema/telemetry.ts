@@ -13,6 +13,7 @@ export const TelemetryTickSchema = z.object({
   t: z.number(),
   net_pnl: z.number(),
   rpc_ping: z.number(),
+  wallet_balance: z.number().optional(),
   status: z.string(),
   positions: z.array(PositionSchema),
 });

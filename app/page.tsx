@@ -38,7 +38,15 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm flex flex-col justify-center">
+          <p className="text-xs text-gray-500 mb-2 tracking-widest">WALLET BALANCE</p>
+          <p className="text-4xl font-light text-white flex items-end gap-2">
+            {data?.wallet_balance !== undefined ? data.wallet_balance.toFixed(4) : '0.0000'}
+            <span className="text-base text-gray-600 mb-1">SOL</span>
+          </p>
+        </div>
+
         <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm flex flex-col justify-center">
           <p className="text-xs text-gray-500 mb-2 tracking-widest">NET PNL (SOL)</p>
           <p className={`text-4xl font-light ${data?.net_pnl && data.net_pnl < 0 ? 'text-red-500' : 'text-emerald-500'}`}>
