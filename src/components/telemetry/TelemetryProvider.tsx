@@ -18,7 +18,12 @@ export function TelemetryProvider() {
     if (ws.current?.readyState === WebSocket.OPEN || ws.current?.readyState === WebSocket.CONNECTING) return;
 
     console.log(`📡 Conectando a telemetría: ${WS_URL}`);
-    ws.current = new WebSocket(WS_URL);
+    try {
+      ws.current = new WebSocket(WS_URL);
+    } catch (error) {
+      console.error("❌ Excepción al instanciar WebSocket (posible bloqueo por Mixed Content SSL):", error);
+      return;
+    }
 
     ws.current.onopen = () => {
       console.log('✅ Conexión establecida');
