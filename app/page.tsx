@@ -2,6 +2,7 @@
 
 import { useTelemetryStore } from '../src/store/useTelemetryStore';
 import { TelemetryProvider } from '../src/components/telemetry/TelemetryProvider';
+import { TelemetryChart } from '../src/components/telemetry/TelemetryChart';
 import { Zap, ShieldAlert, AlertOctagon, PowerOff } from 'lucide-react';
 
 export default function Dashboard() {
@@ -38,11 +39,18 @@ export default function Dashboard() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm">
+        <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm flex flex-col justify-center">
           <p className="text-xs text-gray-500 mb-2 tracking-widest">NET PNL (SOL)</p>
-          <p className={`text-4xl font-light ${data?.net_pnl && data.net_pnl < 0 ? 'text-red-500' : 'text-white'}`}>
-            {data?.net_pnl ? data.net_pnl.toFixed(2) : '0.00'}
+          <p className={`text-4xl font-light ${data?.net_pnl && data.net_pnl < 0 ? 'text-red-500' : 'text-emerald-500'}`}>
+            {data?.net_pnl ? data.net_pnl.toFixed(4) : '0.0000'}
           </p>
+        </div>
+
+        <div className="md:col-span-2 bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm h-[200px]">
+          <h2 className="text-[10px] text-gray-600 mb-4 tracking-widest uppercase">REAL-TIME NET PNL</h2>
+          <div className="h-[140px] w-full">
+            <TelemetryChart />
+          </div>
         </div>
       </div>
 

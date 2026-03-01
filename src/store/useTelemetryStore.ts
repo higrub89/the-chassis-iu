@@ -20,6 +20,7 @@ export interface TelemetryTick {
 interface TelemetryState {
   connected: boolean;
   data: TelemetryTick | null;
+  history: { time: string; pnl: number }[];
   sendCommand: (cmd: string) => void;
   registerSender: (fn: (cmd: string) => void) => void;
   setConnectionStatus: (status: boolean) => void;
@@ -29,8 +30,13 @@ interface TelemetryState {
 export const useTelemetryStore = create<TelemetryState>((set) => ({
   connected: false,
   data: null,
+  history: [],
   sendCommand: () => console.warn("[ECU] Transmisor offline. Enlace roto."),
   registerSender: (fn) => set({ sendCommand: fn }),
   setConnectionStatus: (status) => set({ connected: status }),
-  updateTelemetry: (tick) => set({ data: tick }),
+  updateTelemetry: (tick) => set((state) => {
+    const timeStr = new Date(tick.t * 1000).toLocaleTimeString([], { hour12: false });
+    const newHistory = [...state.history, { time: timeStr, pnl: tick.net_pnl }].slice(-60);
+    return { data: tick, history: newHistory };
+  }),
 }));
