@@ -1,12 +1,16 @@
 'use client';
 
-import { useTelemetryStore } from '../src/store/useTelemetryStore';
+import { ConnectionStatus } from '../src/components/dashboard/ConnectionStatus';
+import { TelemetryMetrics } from '../src/components/dashboard/TelemetryMetrics';
+import { PositionsTable } from '../src/components/dashboard/PositionsTable';
 import { TelemetryProvider } from '../src/components/telemetry/TelemetryProvider';
 import { TelemetryChart } from '../src/components/telemetry/TelemetryChart';
-import { Zap, ShieldAlert, AlertOctagon, PowerOff } from 'lucide-react';
+import { EventTerminal } from '../src/components/dashboard/EventTerminal';
+import { useTelemetryStore } from '../src/store/useTelemetryStore';
+import { AlertOctagon, PowerOff } from 'lucide-react';
 
-export default function Dashboard() {
-  const { connected, data, sendCommand } = useTelemetryStore();
+export default function Home() {
+  const { sendCommand } = useTelemetryStore();
 
   const handlePanic = () => {
     sendCommand(JSON.stringify({ command: "PANIC_ALL", timestamp: Date.now() }));
@@ -17,128 +21,95 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-[#030303] text-gray-300 font-mono p-4 md:p-8 selection:bg-gray-800">
+    <div className="min-h-screen bg-[#050505] text-white p-4 md:p-8 font-sans selection:bg-blue-500/30 overflow-x-hidden">
+      {/* Telemetry WebSocket Logic (No UI) */}
       <TelemetryProvider />
 
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-800 pb-4 mb-8 gap-4">
-        <div className="flex items-center gap-4">
-          <div className={`h-2 w-2 rounded-full ${connected ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-red-600'}`} />
-          <h1 className="text-sm tracking-widest text-gray-400">THE CHASSIS <span className="text-white">TELEMETRY</span></h1>
-        </div>
-
-        <div className="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-xs tracking-wider">
-          <div className="flex items-center gap-2 text-gray-400">
-            <Zap size={14} className={data?.rpc_ping && data.rpc_ping > 200 ? 'text-red-500' : 'text-emerald-500'} />
-            <span>RPC: {data?.rpc_ping || '---'} ms</span>
-          </div>
-          <div className="flex items-center gap-2 text-gray-400">
-            <ShieldAlert size={14} className={data?.status === 'ARMED' ? 'text-emerald-500' : 'text-yellow-500'} />
-            <span>SYS: {data?.status || 'OFFLINE'}</span>
-          </div>
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm flex flex-col justify-center">
-          <p className="text-xs text-gray-500 mb-2 tracking-widest flex items-center justify-between">
-            WALLET BALANCE
-            {data?.sol_price ? <span className="text-[10px] text-emerald-500 bg-emerald-950/30 border border-emerald-900/50 px-2 py-0.5 rounded-sm">${data.sol_price.toFixed(2)}/SOL</span> : null}
-          </p>
-          <div className="flex items-end justify-between">
-            <p className="text-4xl font-light text-white flex items-end gap-2">
-              {data?.wallet_balance !== undefined ? data.wallet_balance.toFixed(4) : '0.0000'}
-              <span className="text-base text-gray-600 mb-1">SOL</span>
+      <div className="max-w-6xl mx-auto flex flex-col gap-6">
+        {/* Header Section */}
+        <div className="flex justify-between items-center border-b border-white/5 pb-6">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl font-black uppercase tracking-tighter text-blue-500 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              The Chassis UI
+            </h1>
+            <p className="text-[10px] text-gray-500 uppercase font-mono tracking-widest">
+              TELEMETRÍA DE ALTA PRECISIÓN <span className="text-white/20 px-2">//</span> v1.0.0-beta
             </p>
           </div>
-          {data?.wallet_balance !== undefined && data?.sol_price !== undefined && (
-            <p className="text-[11px] text-gray-500 mt-2 tracking-widest">
-              ≈ ${(data.wallet_balance * data.sol_price).toFixed(2)} USD
-            </p>
-          )}
+          <ConnectionStatus />
         </div>
 
-        <div className="bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm flex flex-col justify-center">
-          <p className="text-xs text-gray-500 mb-2 tracking-widest">NET PNL (SOL)</p>
-          <p className={`text-4xl font-light ${data?.net_pnl && data.net_pnl < 0 ? 'text-red-500' : 'text-emerald-500'}`}>
-            {data?.net_pnl ? data.net_pnl.toFixed(9) : '0.000000000'}
-          </p>
-        </div>
+        {/* Real-time Metrics Grid */}
+        <TelemetryMetrics />
 
-        <div className="md:col-span-2 bg-[#0a0a0a] border border-gray-900 p-6 rounded-sm h-[200px]">
-          <h2 className="text-[10px] text-gray-600 mb-4 tracking-widest uppercase flex justify-between">
-            <span>REAL-TIME NET PNL & LATENCY</span>
-            <div className="flex gap-4">
-              <span className="text-emerald-500">■ PNL</span>
-              <span className="text-blue-500">■ PING</span>
+        {/* Chart & Terminal Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Chart Card */}
+          <div className="lg:col-span-2 p-6 rounded-2xl bg-gray-900/40 border border-white/5 flex flex-col gap-4 min-h-[350px]">
+            <div className="flex justify-between items-center px-1">
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">PNL Histórico & Latencia</h2>
+              <div className="flex gap-4 text-[10px] font-mono">
+                <span className="flex items-center gap-1.5 text-green-400"><span className="w-1.5 h-1.5 rounded-full bg-green-400" /> PNL</span>
+                <span className="flex items-center gap-1.5 text-blue-400"><span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> Ping</span>
+              </div>
             </div>
-          </h2>
-          <div className="h-[140px] w-full">
-            <TelemetryChart />
+            <div className="flex-1 w-full h-full min-h-[250px]">
+              <TelemetryChart />
+            </div>
+          </div>
+
+          {/* Terminal Sidebar */}
+          <div className="lg:col-span-1 flex flex-col gap-6">
+            <EventTerminal />
+            
+            {/* Tactical Command Center */}
+            <div className="p-5 rounded-xl border border-white/5 bg-white/2 backdrop-blur-sm flex flex-col gap-4">
+              <h3 className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.3em]">Command Center</h3>
+              <div className="grid grid-cols-1 gap-3">
+                <button
+                  onClick={handlePanic}
+                  className="bg-red-950/20 hover:bg-red-900/40 text-red-500 border border-red-900/30 px-4 py-2.5 rounded-lg text-[10px] font-bold tracking-widest transition-all duration-200 flex items-center justify-center gap-2 group"
+                >
+                  <AlertOctagon size={14} className="group-hover:scale-110 transition-transform" />
+                  PANIC_ALL
+                </button>
+
+                <button
+                  onClick={handleHibernate}
+                  className="bg-yellow-950/20 hover:bg-yellow-900/40 text-yellow-500 border border-yellow-900/30 px-4 py-2.5 rounded-lg text-[10px] font-bold tracking-widest transition-all duration-200 flex items-center justify-center gap-2 group"
+                >
+                  <PowerOff size={14} className="group-hover:scale-110 transition-transform" />
+                  HIBERNATE
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="mb-8">
-        <h2 className="text-xs text-gray-500 mb-4 tracking-widest border-b border-gray-900 pb-2">ACTIVE LEDGER</h2>
-        {data?.positions && data.positions.length > 0 ? (
-          <div className="bg-[#0a0a0a] border border-gray-900 rounded-sm overflow-x-auto">
-            <table className="w-full min-w-[600px] text-left text-sm">
-              <thead className="bg-[#111] text-gray-500 text-xs tracking-wider">
-                <tr>
-                  <th className="p-4 font-normal">ASSET</th>
-                  <th className="p-4 font-normal">ENTRY / SL</th>
-                  <th className="p-4 font-normal">CURRENT</th>
-                  <th className="p-4 font-normal text-right">YIELD</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.positions.map((pos, idx) => (
-                  <tr key={idx} className="border-t border-gray-900 hover:bg-[#111] transition-colors">
-                    <td className="p-4 text-gray-400">
-                      <div className="text-white font-medium">{pos.symbol || 'UNKNOWN'}</div>
-                      <div className="text-[10px] tracking-tight">{pos.mint.substring(0, 16)}...</div>
-                    </td>
-                    <td className="p-4">
-                      <div>{pos.entry.toFixed(7)}</div>
-                      <div className="text-[10px] text-red-500">SL: {pos.sl_level.toFixed(2)}%</div>
-                    </td>
-                    <td className="p-4 text-white">{pos.current.toFixed(7)}</td>
-                    <td className={`p-4 text-right ${pos.yield_pct >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-                      {pos.yield_pct > 0 ? '+' : ''}{pos.yield_pct.toFixed(2)}%
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* Positions Section */}
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center px-1">
+            <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Posiciones de Mercado Activas</h2>
+            <div className="flex gap-4 items-center">
+               <span className="text-[10px] font-mono text-white/20">LIVE_FEED_STREAMING</span>
+               <div className="flex gap-1">
+                 <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" />
+                 <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]" />
+                 <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+               </div>
+            </div>
           </div>
-        ) : (
-          <div className="h-32 flex items-center justify-center border border-gray-900 border-dashed text-gray-600 text-xs tracking-widest">
-            NO ACTIVE POSITIONS
-          </div>
-        )}
-      </div>
+          <PositionsTable />
+        </div>
 
-      <div className="border-t border-gray-900 pt-6">
-        <h2 className="text-xs text-gray-500 mb-4 tracking-widest">TACTICAL COMMAND CENTER</h2>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-          <button
-            onClick={handlePanic}
-            className="w-full sm:w-auto bg-red-950/20 hover:bg-red-900/40 text-red-500 border border-red-900/50 px-6 py-3 rounded-sm text-xs tracking-widest transition-all duration-200 flex items-center justify-center gap-2 group"
-          >
-            <AlertOctagon size={16} className="group-hover:scale-110 transition-transform" />
-            PANIC ALL
-          </button>
-
-          <button
-            onClick={handleHibernate}
-            className="w-full sm:w-auto bg-yellow-950/20 hover:bg-yellow-900/40 text-yellow-500 border border-yellow-900/50 px-6 py-3 rounded-sm text-xs tracking-widest transition-all duration-200 flex items-center justify-center gap-2 group"
-          >
-            <PowerOff size={16} className="group-hover:scale-110 transition-transform" />
-            HIBERNATE
-          </button>
+        {/* Footer */}
+        <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center text-[9px] text-gray-600 font-mono uppercase tracking-[0.3em]">
+          <span>LINK_STATE: STABLE_SYNC</span>
+          <span className="text-white/10 hidden md:block tracking-widest">SYSTEM_PROTOCOL_ACX_99</span>
+          <span>© 2026 THE CHASSIS PROJECT</span>
         </div>
       </div>
-
-    </main>
+    </div>
   );
 }
