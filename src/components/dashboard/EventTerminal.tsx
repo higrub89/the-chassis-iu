@@ -18,12 +18,22 @@ export function EventTerminal() {
   useEffect(() => {
     if (!data) return;
 
-    // Generar logs basados en cambios de estado o posiciones (Simulado por ahora)
+    // Generar logs hiper-técnicos en inglés simulando análisis HFT de las posiciones
+    const logTypes: ('info' | 'warn' | 'success')[] = ['info', 'info', 'info', 'success', 'warn'];
+    const selectedType = logTypes[Math.floor(Math.random() * logTypes.length)];
+
+    let msg = `TICK_RCV: Pnl[${data.net_pnl.toFixed(4)}] Ping[${data.rpc_ping}ms]`;
+    if (selectedType === 'success') {
+      msg = `[PROFIT_SYNC] Net Pnl increment detected. Retaining asset matrix.`;
+    } else if (selectedType === 'warn') {
+      msg = `[RISK_ANALYSIS] Elevated slippage or volatility detected in pool.`;
+    }
+
     const newLog: LogEntry = {
       id: Math.random().toString(36).substr(2, 9),
       time: new Date().toLocaleTimeString(),
-      msg: `Tick recibido: PNL ${data.net_pnl.toFixed(4)} SOL | Ping ${data.rpc_ping}ms`,
-      type: 'info'
+      msg: msg,
+      type: selectedType
     };
 
     setLogs(prev => [newLog, ...prev].slice(0, 50));
@@ -36,22 +46,27 @@ export function EventTerminal() {
   }, [logs]);
 
   return (
-    <div className="flex flex-col gap-2">
-      <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 px-1">System Terminal</h2>
-      <div 
+    <div className="flex flex-col gap-2 relative">
+      <h2 className="text-[11px] font-bold uppercase tracking-[0.25em] text-cyan-500/80 px-1 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)] flex items-center gap-2">
+        <span className="w-2 h-2 border border-cyan-500 rounded-sm inline-block animate-[spin_3s_linear_infinite]" />
+        System Terminal
+      </h2>
+      <div
         ref={scrollRef}
-        className="h-32 w-full bg-black border border-white/5 rounded-lg p-3 font-mono text-[10px] overflow-y-auto flex flex-col gap-1 scrollbar-hide"
+        className="h-[200px] w-full bg-[#030303]/80 backdrop-blur-3xl border border-white/10 shadow-[inner_0_0_20px_rgba(0,150,255,0.05),0_0_30px_rgba(0,0,0,0.5)] rounded-xl p-4 font-mono text-[10px] overflow-y-auto flex flex-col gap-1.5 scrollbar-hide relative group"
       >
-        {logs.length === 0 && <span className="text-gray-700 animate-pulse">ESPERANDO SEÑAL DE ENLACE...</span>}
+        <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[length:100%_4px] pointer-events-none opacity-50 z-10" />
+
+        {logs.length === 0 && <span className="text-cyan-800 animate-pulse tracking-widest z-0">AWAITING_UPLINK_DATA_STREAM...</span>}
+
         {logs.map(log => (
-          <div key={log.id} className="flex gap-3 border-l border-white/5 pl-2">
-            <span className="text-gray-600 shrink-0">[{log.time}]</span>
-            <span className={
-              log.type === 'success' ? 'text-green-500' :
-              log.type === 'error' ? 'text-red-500' :
-              log.type === 'warn' ? 'text-yellow-500' : 'text-blue-400'
-            }>
-              {log.msg}
+          <div key={log.id} className="flex gap-4 border-l-2 border-cyan-500/20 pl-3 relative z-0 group-hover:border-cyan-500/50 transition-colors">
+            <span className="text-cyan-800 shrink-0 w-[60px]">{log.time}</span>
+            <span className={`tracking-widest ${log.type === 'success' ? 'text-green-400 drop-shadow-[0_0_5px_currentColor]' :
+              log.type === 'error' ? 'text-red-500 drop-shadow-[0_0_5px_currentColor]' :
+                log.type === 'warn' ? 'text-orange-400 drop-shadow-[0_0_5px_currentColor]' : 'text-cyan-300 drop-shadow-[0_0_5px_currentColor]'
+              }`}>
+              <span className="mr-2 opacity-50">{'>'}</span>{log.msg}
             </span>
           </div>
         ))}

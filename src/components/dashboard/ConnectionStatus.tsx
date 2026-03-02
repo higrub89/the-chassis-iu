@@ -6,10 +6,10 @@ export function ConnectionStatus() {
   const connected = useTelemetryStore((state) => state.connected);
 
   return (
-    <div className="flex items-center gap-2 p-2 rounded-lg bg-black/20 backdrop-blur-sm border border-white/10">
-      <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]'}`} />
-      <span className={`text-xs font-mono uppercase tracking-wider ${connected ? 'text-green-400' : 'text-red-400'}`}>
-        {connected ? 'Enlace Estable' : 'Reconectando...'}
+    <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-[#030303]/80 backdrop-blur-3xl border border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+      <div className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'bg-red-500 animate-[ping_1.5s_cubic-bezier(0,0,0.2,1)_infinite] shadow-[0_0_8px_rgba(239,68,68,0.8)]'}`} />
+      <span className={`text-[10px] font-black uppercase tracking-[0.2em] relative top-[1px] ${connected ? 'text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.4)]' : 'text-red-500 drop-shadow-[0_0_5px_rgba(239,68,68,0.4)]'}`}>
+        {connected ? 'UPLINK_SECURE' : 'AWAITING_SIGNAL'}
       </span>
     </div>
   );
