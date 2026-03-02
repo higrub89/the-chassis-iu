@@ -17,21 +17,21 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-[#030303] text-gray-300 font-mono p-8 selection:bg-gray-800">
+    <main className="min-h-screen bg-[#030303] text-gray-300 font-mono p-4 md:p-8 selection:bg-gray-800">
       <TelemetryProvider />
 
-      <header className="flex justify-between items-center border-b border-gray-800 pb-4 mb-8">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-800 pb-4 mb-8 gap-4">
         <div className="flex items-center gap-4">
           <div className={`h-2 w-2 rounded-full ${connected ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-red-600'}`} />
           <h1 className="text-sm tracking-widest text-gray-400">THE CHASSIS <span className="text-white">TELEMETRY</span></h1>
         </div>
 
-        <div className="flex items-center gap-6 text-xs tracking-wider">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-xs tracking-wider">
+          <div className="flex items-center gap-2 text-gray-400">
             <Zap size={14} className={data?.rpc_ping && data.rpc_ping > 200 ? 'text-red-500' : 'text-emerald-500'} />
             <span>RPC: {data?.rpc_ping || '---'} ms</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-gray-400">
             <ShieldAlert size={14} className={data?.status === 'ARMED' ? 'text-emerald-500' : 'text-yellow-500'} />
             <span>SYS: {data?.status || 'OFFLINE'}</span>
           </div>
@@ -81,8 +81,8 @@ export default function Dashboard() {
       <div className="mb-8">
         <h2 className="text-xs text-gray-500 mb-4 tracking-widest border-b border-gray-900 pb-2">ACTIVE LEDGER</h2>
         {data?.positions && data.positions.length > 0 ? (
-          <div className="bg-[#0a0a0a] border border-gray-900 rounded-sm overflow-hidden">
-            <table className="w-full text-left text-sm">
+          <div className="bg-[#0a0a0a] border border-gray-900 rounded-sm overflow-x-auto">
+            <table className="w-full min-w-[600px] text-left text-sm">
               <thead className="bg-[#111] text-gray-500 text-xs tracking-wider">
                 <tr>
                   <th className="p-4 font-normal">ASSET</th>
@@ -120,10 +120,10 @@ export default function Dashboard() {
 
       <div className="border-t border-gray-900 pt-6">
         <h2 className="text-xs text-gray-500 mb-4 tracking-widest">TACTICAL COMMAND CENTER</h2>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
           <button
             onClick={handlePanic}
-            className="bg-red-950/20 hover:bg-red-900/40 text-red-500 border border-red-900/50 px-6 py-3 rounded-sm text-xs tracking-widest transition-all duration-200 flex items-center gap-2 group"
+            className="w-full sm:w-auto bg-red-950/20 hover:bg-red-900/40 text-red-500 border border-red-900/50 px-6 py-3 rounded-sm text-xs tracking-widest transition-all duration-200 flex items-center justify-center gap-2 group"
           >
             <AlertOctagon size={16} className="group-hover:scale-110 transition-transform" />
             PANIC ALL
@@ -131,7 +131,7 @@ export default function Dashboard() {
 
           <button
             onClick={handleHibernate}
-            className="bg-yellow-950/20 hover:bg-yellow-900/40 text-yellow-500 border border-yellow-900/50 px-6 py-3 rounded-sm text-xs tracking-widest transition-all duration-200 flex items-center gap-2 group"
+            className="w-full sm:w-auto bg-yellow-950/20 hover:bg-yellow-900/40 text-yellow-500 border border-yellow-900/50 px-6 py-3 rounded-sm text-xs tracking-widest transition-all duration-200 flex items-center justify-center gap-2 group"
           >
             <PowerOff size={16} className="group-hover:scale-110 transition-transform" />
             HIBERNATE
