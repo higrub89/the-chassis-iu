@@ -22,15 +22,17 @@ export function TelemetryMetrics() {
     }
   };
 
+  const netPnl = data.net_pnl ?? 0;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* Tarjeta de PNL */}
       <div className="p-5 rounded-2xl bg-[#030303]/60 backdrop-blur-3xl border border-white/10 flex flex-col gap-1 relative overflow-hidden group shadow-[0_0_20px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:-translate-y-1">
-        <div className={`absolute -inset-1 opacity-20 blur-2xl transition-all duration-500 group-hover:opacity-40 ${data.net_pnl >= 0 ? 'bg-cyan-500' : 'bg-red-500'}`} />
+        <div className={`absolute -inset-1 opacity-20 blur-2xl transition-all duration-500 group-hover:opacity-40 ${netPnl >= 0 ? 'bg-cyan-500' : 'bg-red-500'}`} />
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         <span className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold relative z-10 flex items-center justify-between gap-2">
           <span className="flex items-center gap-2">
-            <span className={`w-1 h-3 rounded-full ${data.net_pnl >= 0 ? 'bg-cyan-500' : 'bg-red-500'}`} />
+            <span className={`w-1 h-3 rounded-full ${netPnl >= 0 ? 'bg-cyan-500' : 'bg-red-500'}`} />
             NET PNL EARNINGS
           </span>
           {/* Pnl Micro-Distribution */}
@@ -44,8 +46,8 @@ export function TelemetryMetrics() {
             )}
           </div>
         </span>
-        <div className={`text-2xl font-mono font-black mt-2 relative z-10 drop-shadow-[0_0_10px_currentColor] ${data.net_pnl >= 0 ? 'text-cyan-400' : 'text-red-400'}`}>
-          {data.net_pnl >= 0 ? '+' : ''}{data.net_pnl.toFixed(4)} SOL
+        <div className={`text-2xl font-mono font-black mt-2 relative z-10 drop-shadow-[0_0_10px_currentColor] ${netPnl >= 0 ? 'text-cyan-400' : 'text-red-400'}`}>
+          {netPnl >= 0 ? '+' : ''}{netPnl.toFixed(4)} SOL
         </div>
       </div>
 

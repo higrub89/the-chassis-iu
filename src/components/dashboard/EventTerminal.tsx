@@ -22,7 +22,8 @@ export function EventTerminal() {
     const logTypes: ('info' | 'warn' | 'success')[] = ['info', 'info', 'info', 'success', 'warn'];
     const selectedType = logTypes[Math.floor(Math.random() * logTypes.length)];
 
-    let msg = `TICK_RCV: Pnl[${data.net_pnl.toFixed(4)}] Ping[${data.rpc_ping}ms]`;
+    const netPnl = data.net_pnl ?? 0;
+    let msg = `TICK_RCV: Pnl[${netPnl.toFixed(4)}] Ping[${data.rpc_ping}ms]`;
     if (selectedType === 'success') {
       msg = `[PROFIT_SYNC] Net Pnl increment detected. Retaining asset matrix.`;
     } else if (selectedType === 'warn') {

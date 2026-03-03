@@ -11,7 +11,8 @@ export interface Position {
 
 export interface TelemetryTick {
   t: number;
-  net_pnl: number;
+  net_pnl?: number;
+  pnl?: number;
   rpc_ping: number;
   wallet_balance?: number;
   sol_price?: number;
@@ -42,8 +43,9 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
     }
   },
   updateTelemetry: (tick) => set((state) => {
+    const activePnl = tick.pnl ?? tick.net_pnl ?? 0;
     const timeStr = new Date(tick.t * 1000).toLocaleTimeString([], { hour12: false });
-    const newHistory = [...state.history, { time: timeStr, pnl: tick.net_pnl, ping: tick.rpc_ping }].slice(-60);
+    const newHistory = [...state.history, { time: timeStr, pnl: activePnl, ping: tick.rpc_ping }].slice(-60);
 
     // Dynamic Tab-Tracking (Observability in Background)
     if (typeof window !== 'undefined') {
@@ -56,13 +58,13 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
       } else if (isTrading) {
         const winning = tick.positions.filter(p => p.yield_pct > 0).length;
         const total = tick.positions.length;
-        const netPnlStr = tick.net_pnl >= 0 ? `+${tick.net_pnl.toFixed(2)}` : tick.net_pnl.toFixed(2);
+        const netPnlStr = activePnl >= 0 ? `+${activePnl.toFixed(2)}` : activePnl.toFixed(2);
         title = `🟢 ${netPnlStr} SOL | ${winning}/${total} Win`;
       }
 
       document.title = title;
     }
 
-    return { data: tick, history: newHistory };
+    return { data: { ...tick, net_pnl: activePnl }, history: newHistory };
   }),
 }));

@@ -11,7 +11,8 @@ export const PositionSchema = z.object({
 
 export const TelemetryTickSchema = z.object({
   t: z.number(),
-  net_pnl: z.number(),
+  net_pnl: z.number().optional(),
+  pnl: z.number().optional(),
   rpc_ping: z.number(),
   wallet_balance: z.number().optional(),
   sol_price: z.number().optional(),
