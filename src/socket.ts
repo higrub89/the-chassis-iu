@@ -48,7 +48,14 @@ export class TelemetryClient {
             balance: typeof raw.wallet_balance === 'number' ? raw.wallet_balance : 0,
             uptime: this.connectionStart ? Math.floor((Date.now() - this.connectionStart) / 1000) : 0,
             pnl: typeof raw.net_pnl === 'number' ? raw.net_pnl : 0,
-            last_updates: []
+            last_updates: raw.recent_trades ? raw.recent_trades.map((t: any) => ({
+              time: new Date(t.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+              action: t.trade_type,
+              asset: `${t.token_mint.substring(0,4)}...${t.token_mint.substring(t.token_mint.length-4)}`,
+              status: 'SUCCESS',
+              reason: t.route,
+              fee: t.fee_sol
+            })) : []
           };
           if (this.onMessageCallback) this.onMessageCallback(mappedData as any);
         } catch (err) {

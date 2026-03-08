@@ -118,14 +118,7 @@ function TelemetryView({ data, connected, chartData }: any) {
   );
 }
 
-function ExecutionLogView() {
-  const dummyLogs = [
-    { time: '15:16', action: 'DEGEN ENTRY', asset: 'Dze9...JyKZ', status: 'FAILED', reason: 'Jito Ix Error' },
-    { time: '15:15', action: 'BUY', asset: '45nF...dRj', status: 'FAILED', reason: 'TOKEN_NOT_TRADABLE' },
-    { time: '15:14', action: 'DEGEN ENTRY', asset: '45nF...dRj', status: 'FAILED', reason: 'Insufficient Safety Buffer' },
-    { time: '15:12', action: 'PANIC_ALL', asset: 'ALL', status: 'SUCCESS', reason: 'User Initiated' },
-    { time: '14:20', action: 'BUY', asset: 'FjR3...22yL', status: 'SUCCESS', reason: 'Strategy Triggered' }
-  ];
+function ExecutionLogView({ logs }: { logs: any[] }) {
 
   return (
     <div className="animate-slide-in">
@@ -151,7 +144,11 @@ function ExecutionLogView() {
               </tr>
             </thead>
             <tbody>
-              {dummyLogs.map((log, i) => (
+              {logs.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="mono" style={{ textAlign: 'center', opacity: 0.5, padding: '2rem' }}>NO RECENT OPERATIONS</td>
+                </tr>
+              ) : logs.map((log, i) => (
                 <tr key={i}>
                   <td className="mono" style={{ color: 'var(--text-muted)' }}>{log.time}</td>
                   <td className="mono" style={{ color: 'var(--primary)' }}>{log.action}</td>
@@ -261,7 +258,7 @@ function App() {
   const renderContent = () => {
     switch(activeTab) {
       case 'telemetry': return <TelemetryView data={data} connected={connected} chartData={chartData} />;
-      case 'log': return <ExecutionLogView />;
+      case 'log': return <ExecutionLogView logs={data.last_updates} />;
       case 'settings': return <SettingsView />;
       default: return <TelemetryView data={data} connected={connected} chartData={chartData} />;
     }
